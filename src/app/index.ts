@@ -1,5 +1,6 @@
-import { mainLogin } from './providers/barrel';
+import { cadespPage } from './providers/barrel';
 import puppetteer = require('puppeteer');
+
 
 (async () => {
 
@@ -10,7 +11,6 @@ import puppetteer = require('puppeteer');
     });
 
   const page = await browser.newPage();
-  
-  mainLogin(page);
+  cadespPage(page);
 
 })();

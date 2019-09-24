@@ -6,7 +6,7 @@ const data = {
   urlLogin: 'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/login'
 };
 
-export async function mainLogin(page: puppetteer.Page): Promise<void> {
+export async function mainLogin(page: puppetteer.Page): Promise<puppetteer.Page> {
 
   await page.goto(data.urlLogin, { waitUntil: 'networkidle2' });
 
@@ -21,4 +21,7 @@ export async function mainLogin(page: puppetteer.Page): Promise<void> {
   await page.click('body > .container > .form-signin > .btn');
 
   await navigationPromise;
+
+  return page;
+
 }
