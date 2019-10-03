@@ -1,4 +1,4 @@
-import { cadespPage } from './providers/barrel';
+import { cadespPage, arpenpPage, sielPage, sivecPage, cagedPage } from './providers/barrel';
 import puppetteer = require('puppeteer');
 
 
@@ -11,6 +11,6 @@ import puppetteer = require('puppeteer');
     });
 
   const page = await browser.newPage();
-  cadespPage(page);
+  cagedPage(page);
 
 })();
