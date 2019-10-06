@@ -1,2 +1,2 @@
 export * from './globals-provider';
-export * from './login';
+export * from './login/login-provider';
