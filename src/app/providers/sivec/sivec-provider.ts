@@ -1,5 +1,5 @@
 import puppetteer = require('puppeteer');
-import { mainLogin } from '..';
+import { mainLogin } from '../globals';
 import { json } from 'body-parser';
 
 const data = {
