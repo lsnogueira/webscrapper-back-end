@@ -2,13 +2,13 @@
   "name": "webscrapper-back-end",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/main.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "tsc && node dist/index.js",
+    "start": "tsc && node dist/main.js",
     "server": "tsc && node dist/app.js",
-    "start-dev": "ts-node-dev --respawn --transpileOnly ./app/index.ts",
-    "start-prod": "tsc && node ./dist/index.js",
+    "start-dev": "ts-node-dev --respawn --transpileOnly ./app/main.ts",
+    "start-prod": "tsc && node ./dist/main.js",
     "server-dev": "ts-node-dev --respawn --transpileOnly ./app/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

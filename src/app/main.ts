@@ -1,6 +1,6 @@
-import { cadespPage, arpenpPage, sielPage, sivecPage, cagedPage } from './providers/barrel';
+// import { cadespPage, arpenpPage, sielPage, sivecPage, cagedPage } from './providers/barrel';
 import puppetteer = require('puppeteer');
-
+import { SivecProvider } from './providers';
 
 (async () => {
 
@@ -11,6 +11,8 @@ import puppetteer = require('puppeteer');
     });
 
   const page = await browser.newPage();
-  cagedPage(page);
+  const sivec = new SivecProvider(page);
+
+  await sivec.sivecPage();
 
 })();
