@@ -6,17 +6,21 @@ const data = {
   cnpjInformado: "11111111111111"
 };
 
-export async function cadespPage(page: puppetteer.Page): Promise<void> {
+export async function cadespPage(): Promise<any> {
+  const browser = await puppetteer
+    .launch();
+  const page = await browser.newPage();
+  
 
-
-  mainLogin(page).then(irPaginaCadesp, (error) => {
+  return mainLogin(page).then(irPaginaCadesp, (error) => {
     console.log("Deu erro")
+
   });
 
 }
 
 
-async function irPaginaCadesp(page: puppetteer.Page): Promise<void> {
+async function irPaginaCadesp(page: puppetteer.Page): Promise<any> {
     console.log("ESTOU INDO AQUI")
     await page.goto("http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/cadesp/login.html", { waitUntil: 'networkidle2' });
     const navigationPromise = page.waitForNavigation();
@@ -165,5 +169,7 @@ async function irPaginaCadesp(page: puppetteer.Page): Promise<void> {
    });
   
    console.log(elementosJson)
+
+   return elementosJson
 }
   
