@@ -14,6 +14,6 @@ import {
   });
 
   const page = await browser.newPage();
-  const arpenp = new ArpenpProvider(page);
-  arpenp.arpenpPage();
+  const caged = new CagedProvider(page);
+  caged.cagedPage();
 })();
