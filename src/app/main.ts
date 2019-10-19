@@ -4,7 +4,8 @@ import {
   SielProvider,
   CagedProvider,
   CadespProvider,
-  ArpenpProvider
+  ArpenpProvider,
+  InfocrimProvider
 } from './providers';
 
 (async () => {
@@ -14,6 +15,6 @@ import {
   });
 
   const page = await browser.newPage();
-  const caged = new CagedProvider(page);
-  caged.cagedPage();
+  const infocrim = new InfocrimProvider(page);
+  infocrim.infocrimPage();
 })();
