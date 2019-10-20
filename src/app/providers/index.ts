@@ -5,3 +5,4 @@ export * from './siel/siel-provider';
 export * from './sivec/sivec-provider';
 export * from './caged/caged-provider';
 export * from './infocrim/infocrim-provider';
+export * from './jucesp/jucesp-provider';
