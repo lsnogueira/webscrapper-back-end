@@ -5,13 +5,15 @@ import {
   CagedProvider,
   CadespProvider,
   ArpenpProvider,
-  ArispProvider
+  ArispProvider,
+  InfocrimProvider,
+  JucespProvider
 } from './providers';
 
 (async () => {
   const browser = await puppetteer.launch({
     headless: false,
-    args: ['--full-screen']
+    args: ['--full-screen', '--disable-notifications']
   });
 
   const page = await browser.newPage();
