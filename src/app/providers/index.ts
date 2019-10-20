@@ -8,3 +8,5 @@ export * from './arisp/arisp-provider';
 export * from './infocrim/infocrim-provider';
 export * from './jucesp/jucesp-provider';
 export * from './detran/detran-provider';
+export * from './censec/censec-provider';
+
