@@ -7,3 +7,4 @@ export * from './caged/caged-provider';
 export * from './arisp/arisp-provider';
 export * from './infocrim/infocrim-provider';
 export * from './jucesp/jucesp-provider';
+export * from './censec/censec-provider';
