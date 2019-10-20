@@ -4,7 +4,8 @@ import {
   SielProvider,
   CagedProvider,
   CadespProvider,
-  ArpenpProvider
+  ArpenpProvider,
+  ArispProvider
 } from './providers';
 
 (async () => {
@@ -14,6 +15,7 @@ import {
   });
 
   const page = await browser.newPage();
-  const arpenp = new ArpenpProvider(page);
-  arpenp.arpenpPage();
+  page.setDefaultNavigationTimeout(0);
+  const arisp = new ArispProvider(page, browser);
+  arisp.arispPage();
 })();

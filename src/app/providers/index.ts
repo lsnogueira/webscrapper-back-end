@@ -4,3 +4,4 @@ export * from './arpenp/arpenp-provider';
 export * from './siel/siel-provider';
 export * from './sivec/sivec-provider';
 export * from './caged/caged-provider';
+export * from './arisp/arisp-provider';
