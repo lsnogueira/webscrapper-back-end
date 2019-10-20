@@ -7,7 +7,8 @@ import {
   ArpenpProvider,
   ArispProvider,
   InfocrimProvider,
-  JucespProvider
+  JucespProvider,
+  DetranProvider
 } from './providers';
 
 (async () => {
@@ -18,6 +19,6 @@ import {
 
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
-  const arisp = new ArispProvider(page, browser);
-  arisp.arispPage();
+  const detran = new DetranProvider(page);
+  detran.detranPage();
 })();
