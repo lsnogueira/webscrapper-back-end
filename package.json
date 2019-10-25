@@ -5,8 +5,8 @@
   "main": "dist/main.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "tsc && node dist/main.js",
-    "server": "tsc && node dist/app.js",
+    "start": "node .bless.js && tsc && node dist/main.js",
+    "server": "node .bless.js && tsc && node dist/app.js",
     "start-dev": "ts-node-dev --respawn --transpileOnly ./app/main.ts",
     "start-prod": "tsc && node ./dist/main.js",
     "server-dev": "ts-node-dev --respawn --transpileOnly ./app/app.ts",
