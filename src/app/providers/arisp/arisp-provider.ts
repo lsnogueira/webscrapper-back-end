@@ -138,6 +138,7 @@ export class ArispProvider {
       (target: any) => target.opener() === pageTarget
     );
 
+    // start save pdf
     await page.exposeFunction('writeABString', async (strbuf, targetFile) => {
       const str2ab = function _str2ab(str: any) {
         const buf = new ArrayBuffer(str.length);
@@ -179,9 +180,8 @@ export class ArispProvider {
         }
         return result;
       }
-      const docPage =
-        'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/arisp/pagina11-escritura.pdf';
-      const geturl: any = docPage;
+
+      const geturl: any = 'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/arisp/pagina11-escritura.pdf';
       const objetoRetorno: any = {
         credentials: 'same-origin',
         responseType: 'arraybuffer'
@@ -191,12 +191,13 @@ export class ArispProvider {
         .then((response: any) => response.arrayBuffer())
         .then((arrayBuffer: any) => {
           const bufstring = arrayBufferToString(arrayBuffer);
-          return (window as any).writeABString(bufstring, 'output/pdfs/downloadtest.pdf');
+          return (window as any).writeABString(bufstring, 'src/app/output/pdfs/arisp-relatorio.pdf');
         })
         .catch((error: any) => {
           console.error('Request failed: ', error);
         });
     });
+    // end save pdf
     this.browser.close();
   }
 }
