@@ -1,5 +1,5 @@
 export const PATH = {
-  pdf: 'src/output/pdfs',
+  pdf: 'src/app/output/pdfs',
   json: 'src/output/json',
   screenshots: 'src/output/screenshots'
 };

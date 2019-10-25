@@ -20,6 +20,7 @@
     "@types/pdfkit": "^0.10.3",
     "@types/puppeteer": "^1.19.1",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "jspdf": "^1.4.1",
     "pdfkit": "^0.10.0",
     "puppeteer": "^1.19.0",
