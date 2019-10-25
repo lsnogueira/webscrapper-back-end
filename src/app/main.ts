@@ -15,14 +15,12 @@ import {
 
 (async () => {
   const browser = await puppetteer.launch({
-    headless: false,
+    headless: true,
     args: ['--full-screen', '--disable-notifications']
   });
 
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
-
-  const detran = new DetranProvider(page);
-  detran.detranPage();
-
+  const aris = new ArispProvider(page, browser);
+  aris.arispPage();
 })();
