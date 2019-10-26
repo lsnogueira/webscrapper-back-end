@@ -1,4 +1,4 @@
-import puppetteer = require('puppeteer');
+import puppeteer = require('puppeteer');
 import { mainLogin } from '..';
 import { json } from 'body-parser';
 import * as fs from 'fs';
@@ -79,15 +79,27 @@ var listaValoresElement3: any = {
 
 export class CagedProvider {
 
-  constructor(private page: puppetteer.Page) {}
+  private page: puppeteer.Page;
+  public browser: puppeteer.Browser;
+  constructor() {}
 
   public async cagedPage(): Promise<void> {
-    mainLogin(this.page).then(this.irPaginaCaged, error => {
-      console.log('Deu erro');
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--full-screen', '--disable-notifications']
     });
+  
+    this.page = await this.browser.newPage();
+
+    return mainLogin(this.page).then(
+      (pageNova: puppeteer.Page) => {
+        return this.irPaginaCaged(pageNova)
+      },
+      (error) => console.error(error)
+    );
   }
 
-  private async irPaginaCaged(page: puppetteer.Page): Promise<any> {
+  private async irPaginaCaged(page: puppeteer.Page): Promise<any> {
     function limparTextoChave(textoChave: string): string {
       return textoChave
         .toLowerCase()

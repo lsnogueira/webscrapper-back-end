@@ -1,4 +1,4 @@
-import puppetteer = require('puppeteer');
+import puppeteer = require('puppeteer');
 import { mainLogin } from '../globals';
 import { json } from 'body-parser';
 
@@ -8,15 +8,30 @@ const data = {
 };
 
 export class SielProvider {
-  constructor(private page: puppetteer.Page) {}
+  private result: any;
+  private page: puppeteer.Page;
+  public browser: puppeteer.Browser;
 
-  public async sielPage(): Promise<void> {
-    mainLogin(this.page).then(this.irPaginaSiel, () =>
-      console.error('Erro de login')
+  constructor() {}
+
+  public async sielPage(): Promise<any> {
+    
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--full-screen', '--disable-notifications']
+    });
+  
+    this.page = await this.browser.newPage();
+
+    return mainLogin(this.page).then(
+      (pageNova: puppeteer.Page) => {
+        return this.irPaginaSiel(pageNova)
+      },
+      (error) => console.error(error)
     );
   }
 
-  private async irPaginaSiel(page: puppetteer.Page): Promise<void> {
+  private async irPaginaSiel(page: puppeteer.Page): Promise<any> {
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/siel/login.html',
       { waitUntil: 'networkidle2' }
@@ -93,6 +108,6 @@ export class SielProvider {
       return jsonRetorno;
     });
 
-    console.log(elementosJson);
+    return elementosJson
   }
 }

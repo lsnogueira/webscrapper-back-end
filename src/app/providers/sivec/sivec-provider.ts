@@ -1,4 +1,4 @@
-import puppetteer = require('puppeteer');
+import puppeteer = require('puppeteer');
 import { mainLogin } from '../globals';
 import { json } from 'body-parser';
 
@@ -9,16 +9,29 @@ const data = {
 };
 
 export class SivecProvider {
+  private result: any;
+  private page: puppeteer.Page;
+  public browser: puppeteer.Browser;
 
-  constructor(private page: puppetteer.Page) {}
+  constructor() {}
 
-  public async sivecPage(): Promise<void> {
-    mainLogin(this.page).then(this.irPaginaSivec, () =>
-      console.error('Erro de login')
+  public async sivecPage(): Promise<any> {
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--full-screen', '--disable-notifications']
+    });
+  
+    this.page = await this.browser.newPage();
+
+    return mainLogin(this.page).then(
+      (pageNova: puppeteer.Page) => {
+        return this.irPaginaSivec(pageNova)
+      },
+      (error) => console.error(error)
     );
   }
 
-  private async irPaginaSivec(page: puppetteer.Page): Promise<void> {
+  private async irPaginaSivec(page: puppeteer.Page): Promise<any> {
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/sivec/login.html',
       { waitUntil: 'networkidle2' }
@@ -178,6 +191,6 @@ export class SivecProvider {
       return json;
     });
 
-    console.log(elementosJson);
+    return elementosJson;
   }
 }

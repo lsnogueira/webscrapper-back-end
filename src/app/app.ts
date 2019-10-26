@@ -14,6 +14,7 @@ import {
   
   } from './providers';
 
+import {Main} from './main'
 
 
 const app: express.Application = express();
@@ -98,40 +99,33 @@ const app: express.Application = express();
 
 // });
 
-app.get('/civil', function (req, res) {
+app.get('/civil',  function (req, res) {
     /*Arisp -PDF
     
     , censec, siel, sivec */
-
-
-    const censec = new CensecProvider();
-
-    censec.censecPage().then((jsonReturned) => {
-        console.log(jsonReturned)
-        res.send(jsonReturned);
-    }).catch((error:any)=>{console.log(error)})
-
-    
-
-    
-        
-    
-    
-    
-
-  
+    const buscador = new Main();
+    buscador.buscaCivil().then((jsonMasterReturned) => {
+        res.send(jsonMasterReturned)
+    })        
 });
 
 app.get('/juridica', function (req, res) {
     /*Arisp - PDF
     
     , cadesp,caged,censec e jucesp */
-    res.send('Hello World!');
+    const buscador = new Main();
+    buscador.buscaJuridica().then((jsonMasterReturned) => {
+        res.send(jsonMasterReturned)
+    })      
+
   });
 
-app.get('/registro', function (req, res) {
+app.get('/processo', function (req, res) {
     /* Arpenp */
-    res.send('Hello World!');
+    const buscador = new Main();
+    buscador.buscaProcesso().then((jsonMasterReturned) => {
+        res.send(jsonMasterReturned)
+    })      
 });
 
 app.get('/automotiva', function (req, res) {
@@ -143,7 +137,10 @@ app.get('/automotiva', function (req, res) {
 
 app.get('/criminal', function (req, res) {
     /* Infocrim */
-    res.send('Hello World!');
+    const buscador = new Main();
+    buscador.buscaCriminal().then((jsonMasterReturned) => {
+        res.send(jsonMasterReturned)
+    })      
 });
 
 app.listen(3000, function () {

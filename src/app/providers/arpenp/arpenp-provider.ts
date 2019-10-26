@@ -1,4 +1,4 @@
-import puppetteer = require('puppeteer');
+import puppeteer = require('puppeteer');
 import { mainLogin } from '..';
 import { json } from 'body-parser';
 
@@ -7,15 +7,27 @@ const data = {
 };
 
 export class ArpenpProvider {
-  constructor(private page: puppetteer.Page) {}
+  private page: puppeteer.Page;
+  public browser: puppeteer.Browser;
+  constructor() {}
 
-  public async arpenpPage(): Promise<void> {
-    mainLogin(this.page).then(this.irPaginaArpenp, () =>
-      console.error('Erro de login')
+  public async arpenpPage(): Promise<any> {
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--full-screen', '--disable-notifications']
+    });
+  
+    this.page = await this.browser.newPage();
+
+    return mainLogin(this.page).then(
+      (pageNova: puppeteer.Page) => {
+        return this.irPaginaArpenp(pageNova)
+      },
+      (error) => console.error(error)
     );
   }
 
-  private async irPaginaArpenp(page: puppetteer.Page): Promise<void> {
+  private async irPaginaArpenp(page: puppeteer.Page): Promise<any> {
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/arpensp/login.html',
       { waitUntil: 'networkidle2' }
@@ -72,6 +84,6 @@ export class ArpenpProvider {
       return json;
     });
 
-    console.log(elementosJson);
+    return elementosJson
   }
 }

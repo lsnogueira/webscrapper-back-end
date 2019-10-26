@@ -1,4 +1,4 @@
-import puppetteer = require('puppeteer');
+import puppeteer = require('puppeteer');
 import { mainLogin } from '..';
 import { json } from 'body-parser';
 
@@ -7,15 +7,27 @@ const data = {
 };
 
 export class CadespProvider {
-  constructor(private page: puppetteer.Page) {}
+  private page: puppeteer.Page;
+  public browser: puppeteer.Browser;
+  constructor() {}
 
-  public async cadespPage(): Promise<void> {
-    mainLogin(this.page).then(this.irPaginaCadesp, () =>
-      console.error('Erro de login')
+  public async cadespPage(): Promise<any> {
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--full-screen', '--disable-notifications']
+    });
+  
+    this.page = await this.browser.newPage();
+
+    return mainLogin(this.page).then(
+      (pageNova: puppeteer.Page) => {
+        return this.irPaginaCadesp(pageNova)
+      },
+      (error) => console.error(error)
     );
   }
 
-  private async irPaginaCadesp(page: puppetteer.Page): Promise<void> {
+  private async irPaginaCadesp(page: puppeteer.Page): Promise<any> {
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/cadesp/login.html',
       { waitUntil: 'networkidle2' }

@@ -1,19 +1,30 @@
-import puppetteer = require('puppeteer');
+import puppeteer = require('puppeteer');
 import { mainLogin } from '..';
 import { json } from 'body-parser';
 import * as fs from 'fs';
 
 export class InfocrimProvider {
+  private page: puppeteer.Page;
+  public browser: puppeteer.Browser;
+  constructor() {}
 
-  constructor(private page: puppetteer.Page) {}
-
-  public async infocrimPage(): Promise<void> {
-    mainLogin(this.page).then(this.irPaginaInfocrim, error => {
-      console.log('Deu erro');
+  public async infocrimPage(): Promise<any> {
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--full-screen', '--disable-notifications']
     });
+  
+    this.page = await this.browser.newPage();
+
+    return mainLogin(this.page).then(
+      (pageNova: puppeteer.Page) => {
+        return this.irPaginaInfocrim(pageNova)
+      },
+      (error) => console.error(error)
+    );
   }
 
-  private async irPaginaInfocrim(page: puppetteer.Page): Promise<any> {
+  private async irPaginaInfocrim(page: puppeteer.Page): Promise<any> {
     function limparTextoChave(textoChave: string): string {
       return textoChave
         .toLowerCase()

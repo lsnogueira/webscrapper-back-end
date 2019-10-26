@@ -7,9 +7,10 @@ export class CensecProvider {
   private result: any;
   private page: puppeteer.Page;
   public browser: puppeteer.Browser;
-  constructor() {}
+  constructor() {
+  }
 
-  public async censecPage() {
+  public async censecPage(): Promise<any> {
 
     this.browser = await puppeteer.launch({
       headless: false,
@@ -18,10 +19,9 @@ export class CensecProvider {
   
     this.page = await this.browser.newPage();
 
-
-    mainLogin(this.page).then(
+    return mainLogin(this.page).then(
       (pageNova: puppeteer.Page) => {
-        this.irPaginaCensec(pageNova)
+        return this.irPaginaCensec(pageNova)
       },
       (error) => console.error(error)
     );

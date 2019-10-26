@@ -1,4 +1,4 @@
-import puppetteer = require('puppeteer');
+import puppeteer = require('puppeteer');
 import { mainLogin } from '..';
 import { json } from 'body-parser';
 
@@ -7,15 +7,27 @@ const data = {
 };
 
 export class JucespProvider {
-  constructor(private page: puppetteer.Page) {}
+  constructor() {}
+  private page: puppeteer.Page;
+  public browser: puppeteer.Browser;
 
-  public async jucespPage(): Promise<void> {
-    mainLogin(this.page).then(this.irPaginaJucesp, () =>
-      console.error('Erro de login')
+  public async jucespPage(): Promise<any> {
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--full-screen', '--disable-notifications']
+    });
+  
+    this.page = await this.browser.newPage();
+
+    return mainLogin(this.page).then(
+      (pageNova: puppeteer.Page) => {
+        return this.irPaginaJucesp(pageNova)
+      },
+      (error) => console.error(error)
     );
   }
 
-  private async irPaginaJucesp(page: puppetteer.Page): Promise<void> {
+  private async irPaginaJucesp(page: puppeteer.Page): Promise<any> {
     const navigationPromise = page.waitForNavigation();
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/jucesp/index.html',
