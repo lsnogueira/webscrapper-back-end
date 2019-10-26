@@ -1,9 +1,22 @@
-// import express = require('express');
-// import { cadespPage, arpenpPage, sielPage, sivecPage, cagedPage } from './providers/barrel';
+import express = require('express');
+import puppeteer = require('puppeteer');
+import {
+    SivecProvider,
+    SielProvider,
+    CagedProvider,
+    CadespProvider,
+    ArpenpProvider,
+    ArispProvider,
+    InfocrimProvider,
+    JucespProvider,
+    DetranProvider,
+    CensecProvider
+  
+  } from './providers';
 
 
 
-// const app: express.Application = express();
+const app: express.Application = express();
 
 
 // app.get('/', function (req, res) {
@@ -85,10 +98,54 @@
 
 // });
 
-// app.get('/consulta', function (req, res) {
-//   res.send('Hello World!');
-// });
+app.get('/civil', function (req, res) {
+    /*Arisp -PDF
+    
+    , censec, siel, sivec */
 
-// app.listen(3000, function () {
-//   console.log('Example app listening on port 3000!');
-// });
+
+    const censec = new CensecProvider();
+
+    censec.censecPage().then((jsonReturned) => {
+        console.log(jsonReturned)
+        res.send(jsonReturned);
+    }).catch((error:any)=>{console.log(error)})
+
+    
+
+    
+        
+    
+    
+    
+
+  
+});
+
+app.get('/juridica', function (req, res) {
+    /*Arisp - PDF
+    
+    , cadesp,caged,censec e jucesp */
+    res.send('Hello World!');
+  });
+
+app.get('/registro', function (req, res) {
+    /* Arpenp */
+    res.send('Hello World!');
+});
+
+app.get('/automotiva', function (req, res) {
+    /* Detran - PDF
+    
+    */
+    res.send('Hello World!');
+});
+
+app.get('/criminal', function (req, res) {
+    /* Infocrim */
+    res.send('Hello World!');
+});
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+});

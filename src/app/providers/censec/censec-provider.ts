@@ -5,18 +5,29 @@ import { CensecCartorioDadosModel } from '../../core/domain/entity/censec-cartor
 
 export class CensecProvider {
   private result: any;
-  constructor(private page: puppeteer.Page) {}
+  private page: puppeteer.Page;
+  public browser: puppeteer.Browser;
+  constructor() {}
 
   public async censecPage() {
+
+    this.browser = await puppeteer.launch({
+      headless: false,
+      args: ['--full-screen', '--disable-notifications']
+    });
+  
+    this.page = await this.browser.newPage();
+
+
     mainLogin(this.page).then(
-      (page: puppeteer.Page) => {
-        this.irPaginaCensec(page);
+      (pageNova: puppeteer.Page) => {
+        this.irPaginaCensec(pageNova)
       },
-      () => console.error('Erro de login')
+      (error) => console.error(error)
     );
   }
 
-  private async irPaginaCensec(page: puppeteer.Page) {
+  private async irPaginaCensec(page: puppeteer.Page): Promise<any> {
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/censec/login.html',
       { waitUntil: 'networkidle2' }
@@ -204,6 +215,6 @@ export class CensecProvider {
         partes: partesContent,
         dadosCartorio: dadosCartorioContent,
     };
-    console.log(this.result);
+    return this.result
   }
 }
