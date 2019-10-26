@@ -1,6 +1,7 @@
 import express = require('express');
 import puppeteer = require('puppeteer');
 import {PdfMaker} from './pdfMaker';
+import * as fs from 'fs';
 import {
     SivecProvider,
     SielProvider,
@@ -203,10 +204,13 @@ app.get('/civil',  function (req, res) {
     var pdfMaker = new PdfMaker()
     const PDFDocument = require('pdfkit');
     const documento = new PDFDocument;
-    documento.pipe(res)
+    let out = fs.createWriteStream('src/app/output/pdfs/output.pdf')
+    documento.pipe(out)
     buscador.buscaCivil().then((jsonMasterReturned) => {
         pdfMaker.construirPdfCivil(jsonMasterReturned,documento).then(() => {
-            documento.end()
+            out.on('finish', function(){
+                res.download('src/app/output/pdfs/output.pdf')
+            })
         })
     })        
 });

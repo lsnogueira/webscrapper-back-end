@@ -9,13 +9,14 @@ export class PdfMaker {
   
   constructor(){ }
 
-  public pdfCensec(jsonCensec: any, docAux: any){
+  public pdfCensec(jsonCensec: any, docAux: any, background: string){
+    let strBackground = 'src/app/img/' + background+'.jpg'
     docAux.addPage(
         docAux.image('src/app/img/CENSEC.jpg', 0, 0, {width: 612})
       );
     
     //Consultando partes
-    docAux.image('src/app/img/background2.jpg', 0, 0, {width: 612})
+    docAux.image(strBackground, 0, 0, {width: 612})
     var x = 120
     var y = 180
     docAux.fontSize(20)
@@ -46,7 +47,7 @@ export class PdfMaker {
     //Consultando Dados Cartorios
 
     docAux.addPage()
-    docAux.image('src/app/img/background2.jpg', 0, 0, {width: 612})
+    docAux.image(strBackground, 0, 0, {width: 612})
     
     x = 120
     y = 180
@@ -74,11 +75,12 @@ export class PdfMaker {
     .stroke();  
   }
 
-  private pdfSiel(jsonSiel: any, docAux: any){
+  private pdfSiel(jsonSiel: any, docAux: any, background:string){
+    let strBackground = 'src/app/img/' + background+'.jpg'
     docAux.addPage(
         docAux.image('src/app/img/SIEL.jpg', 0, 0, {width: 612})
       );
-    docAux.image('src/app/img/background2.jpg', 0, 0, {width: 612})
+    docAux.image(strBackground, 0, 0, {width: 612})
     var x = 120
     var y = 180
     docAux.fontSize(20)
@@ -109,9 +111,11 @@ export class PdfMaker {
     
   }
 
-  private pdfSivec(jsonSivec: any, docAux: any){ 
+  private pdfSivec(jsonSivec: any, docAux: any, background: string){ 
+    let strBackground = 'src/app/img/' + background+'.jpg'
+    
     docAux.addPage(
-        docAux.image('src/app/img/SIVEC.jpg', 0, 0, {width: 612})
+        docAux.image(strBackground, 0, 0, {width: 612})
       );
 
     var jsonSivec1: any = {}
@@ -128,7 +132,7 @@ export class PdfMaker {
     })
 
     /* Json Sivec 1*/
-    docAux.image('src/app/img/background2.jpg', 0, 0, {width: 612})
+    docAux.image(strBackground, 0, 0, {width: 612})
     var x = 130
     var y = 180
     docAux.fontSize(20)
@@ -159,7 +163,7 @@ export class PdfMaker {
     /* Json Sivec 2*/
     docAux.addPage()
 
-    docAux.image('src/app/img/background2.jpg', 0, 0, {width: 612})
+    docAux.image(strBackground, 0, 0, {width: 612})
     x = 130
     y = 180
     docAux.fontSize(20)
@@ -209,16 +213,34 @@ export class PdfMaker {
       );
     
     /* Censec */
-    await this.pdfCensec(jsonCivil["censec"], doc)
+    await this.pdfCensec(jsonCivil["censec"], doc, 'backgroundCivil')
     /* Siel */
     await doc.addPage()
-    await this.pdfSiel(jsonCivil["siel"], doc)
+    await this.pdfSiel(jsonCivil["siel"], doc, 'backgroundCivil')
     /* Sivec */
     await doc.addPage()
-    await this.pdfSivec(jsonCivil["sivec"], doc)
-
+    await this.pdfSivec(jsonCivil["sivec"], doc, 'backgroundCivil')
+    await doc.end()
     
- 
+  }
+
+
+  public async construirPdfJuridico(jsonCivil: any, doc: any, background: string) : Promise<void>{    
+
+    //doc.image('./img/background2.jpg', 0, 0, {width: 612})
+    await doc.addPage(
+        doc.image('src/app/img/coverCivil.jpg', 0, 0, {width: 612})
+      );
+    
+    /* Censec */
+    await this.pdfCensec(jsonCivil["censec"], doc, 'backgroundCivil')
+    /* Siel */
+    await doc.addPage()
+    await this.pdfSiel(jsonCivil["siel"], doc, 'backgroundCivil')
+    /* Sivec */
+    await doc.addPage()
+    await this.pdfSivec(jsonCivil["sivec"], doc, 'backgroundCivil')
+    await doc.end()
     
   }
 
