@@ -22,96 +22,34 @@ import {
 
 
 
-// (async () => {
-//     var pdfMaker = new PdfMaker()
-//     var json = {
-//       "censec": {
-//         "partes": [
-//           {
-//             "nome": " EDUARDO LATI",
-//             "documento": " 14629967877",
-//             "qualidade": " OUTORGADO"
-//           },
-//           {
-//             "nome": " JOAO FLAVIO CURY FILHO",
-//             "documento": " 13552005803",
-//             "qualidade": " INTERVENIENTE"
-//           },
-//           {
-//             "nome": " MAURO VERGUEIRO",
-//             "documento": " 12837531898",
-//             "qualidade": " INTERVENIENTE"
-//           },
-//           {
-//             "nome": " ACME CO LTDA",
-//             "documento": " 19811999000105",
-//             "qualidade": " OUTORGANTE"
-//           }
-//         ],
-//         "dadosCartorio": [
-//           {
-//             "contato": " Recepção",
-//             "telefone": " (11) 3058-5100",
-//             "ramal": " ",
-//             "status": " Ativo",
-//             "tipo": " Fixo"
-//           },
-//           {
-//             "contato": " Cartório",
-//             "telefone": " (11) 30581018_",
-//             "ramal": " ",
-//             "status": " Ativo",
-//             "tipo": " Fixo"
-//           }
-//         ]
-//       }
-      
-//       ,
-//       "siel": {
-//         "nome": "KLAUDIO TAFFAREL",
-//         "titulo": "123452300116",
-//         "data_nasc": "21/06/1989",
-//         "zona": "249",
-//         "endereco": "RUA LINS VASCONCELOS,121 AP 114 - SANTANA",
-//         "municipio": "SÃO PAULO",
-//         "uf": "SP",
-//         "data_domicilio": "14/12/2007",
-//         "nome_pai": "ROBERTO CAMARA",
-//         "nome_mae": "ANA LAURA TAFFAREL",
-//         "naturalidade": "SÃO PAULO, SP",
-//         "cod_validacao": "7431f2f05f7d3871e199515b14c8e833"
-//       },
-//       "sivec": {
-//         "nome": "JOAO CARLOS DE ANDRADE",
-//         "sexo": "Masculino",
-//         "data_nascimento": "",
-//         "rg": "",
-//         "n_controle vec": "",
-//         "tipo_rg": "R.G. COM OUTRAS QUALIFICACOES",
-//         "data_emissao rg": "27/05/1947",
-//         "alcunha": "JOAO BOTA",
-//         "estado_civil": "CASADO",
-//         "naturalidade": "CRISTAIS PAULISTA -SP",
-//         "naturalizado(s_n)": "NÃO",
-//         "posto_identificacao": "I.I.R.G.D.(CASPER LIBERO",
-//         "grau_instrucao": "PRIMEIRO CICLO",
-//         "formula_fundamental": "E4343/I2222",
-//         "nome_pai": "BERNARDINO CARDOSO DE ALMEIDA , BERNARDINO CARDOSO DE ANDRADE",
-//         "cor_olhos": "AZUIS",
-//         "nome_mae": "AMELIA DONARD DE JESUS , AMELIA DONALHA , AMELIA DONALIA DE JESUS , AMELIA DONADELI DE JESUS , AMELIA DORNALIA DE JESUS",
-//         "cabelo": "CAST.CLAROS",
-//         "cor_pele": "BRANCA",
-//         "profissao": "MOTORISTA",
-//         "residencial": "R ANTONIO CANDIDO MELO , 40 - FRANCA -SP",
-//         "trabalho": "FRANCA -SP"
-//       },
-//       "tipoConsulta": "Civil"
-//     }
-//     var documento = new PDFDocument
-//     documento.pipe(fs.createWriteStream("output.pdf"))
-//     pdfMaker.construirPdfCivil(json, documento)
-//     documento.end()
-// })();
+(async () => {
+    var pdfMaker = new PdfMaker()
+    var json ={
+      "arpenp": {
+        "cartorio_id": "110",
+        "busca_juiz_id": "1997333",
+        "tipo_registro": "C",
+        "nome_registrado_1": "Antonio TORRES Coutinho",
+        "nome_registrado_2": "Ellen MARCIA FERNANDES SILVEIRA",
+        "novo_nome_registrado_1": "",
+        "novo_nome_registrado_2": "Ellen MARCIA FERNANDES SILVEIRA Coutinho",
+        "data_ocorrido": "19/03/2015",
+        "data_registro": "19/03/2015",
+        "num_livro": "00133",
+        "num_folha": "237",
+        "num_registro": "0039194",
+        "matricula": "11914901552015200133237003919491",
+        "nome_requerente": "Antonio Torres Coutinho",
+        "documento_requerente": "",
+        "telefone_requerente": "(11) 3119-7142"
+      },
+      "tipoConsulta": "Processo"
+    }
+    var documento = new PDFDocument
+    documento.pipe(fs.createWriteStream("output.pdf"))
+    pdfMaker.construirPdfProcesso(json, documento)
+    
+})();
 
 export class Main {
   private client: any

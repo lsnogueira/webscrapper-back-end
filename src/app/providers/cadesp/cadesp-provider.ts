@@ -252,6 +252,6 @@ export class CadespProvider {
       return json;
     });
 
-    console.log(elementosJson);
+    return elementosJson;
   }
 }

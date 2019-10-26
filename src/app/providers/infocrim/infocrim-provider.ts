@@ -162,7 +162,13 @@ export class InfocrimProvider {
       });
 
       console.log(dictChaveValor)
-      return dictChaveValor
+      var jsonRetornoConsertado: any = {}
+      dictChaveValor.forEach((item: any) => {
+        Object.keys(item).forEach((chave) => {
+          jsonRetornoConsertado[chave] = item[chave]
+        })
+      })
+      return jsonRetornoConsertado
       
     })
     console.log(elementosJson)
