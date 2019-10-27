@@ -525,8 +525,8 @@ export class PdfMaker {
     let strBackground = 'src/app/img/' + background+'.jpg'
     
     docAux.addPage(
-        docAux.image(strBackground, 0, 0, {width: 612})
-      );
+      docAux.image('src/app/img/SIVEC.jpg', 0, 0, {width: 612})
+    );
 
     var jsonSivec1: any = {}
     var jsonSivec2: any = {}
