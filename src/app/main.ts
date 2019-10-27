@@ -22,34 +22,34 @@ import {
 
 
 
-(async () => {
-    var pdfMaker = new PdfMaker()
-    var json ={
-      "arpenp": {
-        "cartorio_id": "110",
-        "busca_juiz_id": "1997333",
-        "tipo_registro": "C",
-        "nome_registrado_1": "Antonio TORRES Coutinho",
-        "nome_registrado_2": "Ellen MARCIA FERNANDES SILVEIRA",
-        "novo_nome_registrado_1": "",
-        "novo_nome_registrado_2": "Ellen MARCIA FERNANDES SILVEIRA Coutinho",
-        "data_ocorrido": "19/03/2015",
-        "data_registro": "19/03/2015",
-        "num_livro": "00133",
-        "num_folha": "237",
-        "num_registro": "0039194",
-        "matricula": "11914901552015200133237003919491",
-        "nome_requerente": "Antonio Torres Coutinho",
-        "documento_requerente": "",
-        "telefone_requerente": "(11) 3119-7142"
-      },
-      "tipoConsulta": "Processo"
-    }
-    var documento = new PDFDocument
-    documento.pipe(fs.createWriteStream("output.pdf"))
-    pdfMaker.construirPdfProcesso(json, documento)
+// (async () => {
+//     var pdfMaker = new PdfMaker()
+//     var json ={
+//       "arpenp": {
+//         "cartorio_id": "110",
+//         "busca_juiz_id": "1997333",
+//         "tipo_registro": "C",
+//         "nome_registrado_1": "Antonio TORRES Coutinho",
+//         "nome_registrado_2": "Ellen MARCIA FERNANDES SILVEIRA",
+//         "novo_nome_registrado_1": "",
+//         "novo_nome_registrado_2": "Ellen MARCIA FERNANDES SILVEIRA Coutinho",
+//         "data_ocorrido": "19/03/2015",
+//         "data_registro": "19/03/2015",
+//         "num_livro": "00133",
+//         "num_folha": "237",
+//         "num_registro": "0039194",
+//         "matricula": "11914901552015200133237003919491",
+//         "nome_requerente": "Antonio Torres Coutinho",
+//         "documento_requerente": "",
+//         "telefone_requerente": "(11) 3119-7142"
+//       },
+//       "tipoConsulta": "Processo"
+//     }
+//     var documento = new PDFDocument
+//     documento.pipe(fs.createWriteStream("output.pdf"))
+//     pdfMaker.construirPdfProcesso(json, documento)
     
-})();
+// })();
 
 export class Main {
   private client: any
@@ -57,8 +57,19 @@ export class Main {
     const uri = "mongodb+srv://usuariompsp:usuariompsp@cluster0-limay.mongodb.net/test?retryWrites=true&w=majority";
     this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   }
-
+  private async getDatetime(){
+    var currentdate = new Date(); 
+    var datetime = "" + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+    return datetime;
+  }
   public async buscaCivil(): Promise<any>{
+    
+    
     var jsonMaster: any = {}
     const censec = new CensecProvider()
     const siel = new SielProvider()
@@ -72,7 +83,8 @@ export class Main {
       "censec": censecDados,
       "siel": sielDados,
       "sivec": sivecDados,
-       tipoConsulta: "Civil"
+       tipoConsulta: "Civil",
+       dataConsulta: await this.getDatetime()
     };
     await this.client.connect((err:any) => {
       console.log(err)
@@ -105,7 +117,8 @@ export class Main {
       "caged": cagedDados,
       "censec": censecDados,
       "jucesp": jucespDados,
-      tipoConsulta: "Juridica"
+      tipoConsulta: "Juridica",
+      dataConsulta: await this.getDatetime()
     };
 
     await this.client.connect((err:any) => {
@@ -128,7 +141,8 @@ export class Main {
     
     jsonMaster = {
       "arpenp": arpenpDados,
-      tipoConsulta: "Processo"
+      tipoConsulta: "Processo",
+      dataConsulta: await this.getDatetime()
     };
 
     await this.client.connect((err:any) => {
@@ -154,6 +168,7 @@ export class Main {
     jsonMaster = {
       "infocrim": infocrimDados,
       tipoConsulta:"Criminal",
+      dataConsulta: await this.getDatetime()
     };
 
     await this.client.connect((err:any) => {
