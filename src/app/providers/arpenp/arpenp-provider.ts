@@ -1,18 +1,15 @@
 import puppeteer = require('puppeteer');
 import { mainLogin } from '..';
 
-const data = {
-  numero_processo: '11111111111111'
-};
-
 export class ArpenpProvider {
-  private page: puppeteer.Page;
   public browser: puppeteer.Browser;
-  constructor() {}
+  private page: puppeteer.Page;
+
+  constructor(private data: any) {}
 
   public async arpenpPage(): Promise<any> {
     this.browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--full-screen', '--disable-notifications']
     });
   
@@ -58,7 +55,7 @@ export class ArpenpProvider {
     await page.waitForSelector('table #n');
     await page.click('table #n');
 
-    await page.type('body input[name="numero_processo"]', data.numero_processo);
+    await page.type('body input[name="numero_processo"]', this.data.numeroProcesso);
 
     await page.waitForSelector('table #btn_pesquisar');
     await page.click('table #btn_pesquisar');

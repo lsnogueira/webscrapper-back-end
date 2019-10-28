@@ -1,94 +1,18 @@
 import puppeteer = require('puppeteer');
 import { mainLogin } from '..';
-import { json } from 'body-parser';
-import * as fs from 'fs';
-
-const data = {
-  cnpj: '11111111111111'
-};
-
-var listaValoresElement: any = {
-  lbCnpjCpf020_1: ['txCnpj020_2'],
-  lbrazaosocial020_3: ['txtrazaosocial020_4'],
-  lb3_logradouro020: ['txt3_logradouro020'],
-  lb4_bairro020: ['txt4_bairro020'],
-  lb6_municipio020: ['txt5_codmunicipio020', 'txt6_municipio020'],
-  lb7_uf020: ['txt7_uf020'],
-  lb8_cep020: ['txt8_cep020'],
-  lb_nome_contato: ['txt_nome_contato'],
-  lb_contato_cpf: ['txt_contato_cpf'],
-  lb9_telefone020: ['txt21_ddd020', 'txt9_telefone020'],
-  lb10_ramal020: ['txt10_ramal020'],
-  lb11_email: ['txt11_email']
-};
-
-var listaValoresElement2: any = {
-  'formResumoEmpresaCaged:lblCnpjRaiz': ['formResumoEmpresaCaged:txtCnpjRaiz'],
-  'formResumoEmpresaCaged:lblRazaoSocial': [
-    'formResumoEmpresaCaged:txtRazaoSocial'
-  ],
-
-  'formResumoEmpresaCaged:lblAtividadeEconomica': [
-    'formResumoEmpresaCaged:txtCodigoAtividadeEconomica',
-    'formResumoEmpresaCaged:txtDescricaoAtividadeEconomica'
-  ],
-  'formResumoEmpresaCaged:lblNumFiliais': [
-    'formResumoEmpresaCaged:txtNumFiliais'
-  ],
-  'formResumoEmpresaCaged:lblTotalVinculos': [
-    'formResumoEmpresaCaged:txtTotalVinculos'
-  ],
-  'formResumoEmpresaCaged:lblTotalNumPrimDia': [
-    'formResumoEmpresaCaged:txtTotalNumPrimDia'
-  ],
-  'formResumoEmpresaCaged:lblTotalNumAdmissoes': [
-    'formResumoEmpresaCaged:txtTotalNumAdmissoes'
-  ],
-  'formResumoEmpresaCaged:lblTotalNumDesligamentos': [
-    'formResumoEmpresaCaged:txtTotalNumDesligamentos'
-  ],
-  'formResumoEmpresaCaged:lblTotalNumUltDia': [
-    'formResumoEmpresaCaged:txtTotalNumUltDia'
-  ],
-  'formResumoEmpresaCaged:lblTotalVariacaoAbosulta': [
-    'formResumoEmpresaCaged:txtTotalVariacaoAbosulta'
-  ]
-};
-
-var listaValoresElement3: any = {
-  lb2_Nome027: ['txt2_Nome027'],
-  lb1_pispasep027: ['txt1_Pis028'],
-  lb1_elos028: ['txt1_elos028'],
-
-  lb3_Cpf027: ['txt3_Cpf027'],
-  lb5_Ctps027: ['txt5_Ctps027'],
-  lb4_SitPis027: ['txt4_SitPis027'],
-  lb8_Nac027: ['txt7_CdNac027', 'txt8_Nac027'],
-  lb12_Instr027: ['txt11_CdInstr027', 'txt12_Instr027'],
-  lb13_Def027: ['txt13_Def027'],
-
-  lb4_datanasc027: ['txt4_datanasc027'],
-  lb6_ufctps027: ['txt6_ufctps027'],
-  lb6_Sexo027: ['txt6_Sexo027'],
-  lb10_Raca027: ['txt9_CdRaca027', 'txt10_Raca027'],
-  labelEstabCep90: ['txtEstabCep91'],
-
-  lb26_Caged027: ['txt26_Caged027'],
-  lb27_Rais027: ['txt27_Rais027']
-};
 
 export class CagedProvider {
-
-  private page: puppeteer.Page;
   public browser: puppeteer.Browser;
-  constructor() {}
+  private page: puppeteer.Page;
+
+  constructor(private data: any) {}
 
   public async cagedPage(): Promise<void> {
     this.browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--full-screen', '--disable-notifications']
     });
-  
+
     this.page = await this.browser.newPage();
 
     return mainLogin(this.page).then(
@@ -100,22 +24,6 @@ export class CagedProvider {
   }
 
   private async irPaginaCaged(page: puppeteer.Page): Promise<any> {
-    function limparTextoChave(textoChave: string): string {
-      return textoChave
-        .toLowerCase()
-        .replace(' de ', '_')
-        .replace('/', '_')
-        .replace(' dos ', '_')
-        .replace(' da ', '_')
-        .replace(' do ', '_')
-        .replace('ó', 'o')
-        .replace(':', '')
-        .replace('º', '')
-        .replace(' ', '_')
-        .replace('(s/n)', '')
-        .replace('ç', 'c')
-        .replace('ã', 'a');
-    }
 
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/caged/login.html',
@@ -140,23 +48,13 @@ export class CagedProvider {
 
     await navigationPromise;
 
-    // await page.waitForSelector('select[name="formPesquisarAutorizado:slctPesquisarPrimeiroAutorizado"]')
-    // await page.select('select[name="formPesquisarAutorizado:slctPesquisarPrimeiroAutorizado"]', '1')
-
     await page.waitForSelector('.cnpjFormat');
-    await page.type('.cnpjFormat', data.cnpj);
-
-    // await page.waitForSelector('select[name="formPesquisarAutorizado\\:slctTipoPesquisaAutorizado"]')
-    // await page.select('select[name="formPesquisarAutorizado\\:slctTipoPesquisaAutorizado"]', '1')
+    await page.type('.cnpjFormat', this.data.cnpj);
 
     await page.waitForSelector('input[id="formPesquisarAutorizado:bt027_8"]');
     await page.click('input[id="formPesquisarAutorizado:bt027_8"]');
 
     await navigationPromise;
-
-    console.log(
-      '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ CHEGUEI @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
-    );
 
     await page.waitForSelector('#lbCnpjCpf020_1');
     await page.waitForSelector('#txCnpj020_2');
@@ -185,7 +83,7 @@ export class CagedProvider {
 
     const elementosJson = await page.evaluate(() => {
       let json: any = {};
-      var listaValoresElement: any = {
+      const listaValoresElement: any = {
         lbCnpjCpf020_1: ['txCnpj020_2'],
         lbrazaosocial020_3: ['txtrazaosocial020_4'],
         lb3_logradouro020: ['txt3_logradouro020'],
@@ -219,23 +117,16 @@ export class CagedProvider {
           .replace('ã', 'a');
       }
 
-      console.log('ESTOI AQUI');
-      console.log(listaValoresElement ? 'TEM VALOR' : 'NAO TEM');
       Object.keys(listaValoresElement).forEach((chaveHtml: string) => {
-        console.log('CHAVE: ' + chaveHtml);
         let strValue: string = '';
         let elementoValor: any;
         let elementoStr: string;
         let chaveJson: string = '';
-        let elementoChave: any = document.querySelector('#' + chaveHtml);
+        const elementoChave: any = document.querySelector('#' + chaveHtml);
         chaveJson = limparTextoChave(elementoChave.outerText);
-        console.log(chaveJson);
-
-        console.log('Indo para o foreach');
 
         listaValoresElement[chaveHtml].forEach((itemValue: any) => {
           elementoValor = document.querySelector('#' + itemValue);
-          console.log(elementoValor);
           elementoStr = elementoValor.outerText;
 
           strValue += elementoStr + ' ';
@@ -271,7 +162,7 @@ export class CagedProvider {
     await navigationPromise;
 
     await page.waitForSelector('.cnpjRaizFormat');
-    await page.type('.cnpjRaizFormat', data.cnpj);
+    await page.type('.cnpjRaizFormat', this.data.cnpj);
 
     await navigationPromise;
 
@@ -324,7 +215,7 @@ export class CagedProvider {
 
     const elementosJson2 = await page.evaluate(listaValoresElement2 => {
       let json: any = {};
-      var listaValoresElement2: any = {
+      listaValoresElement2 = {
         'formResumoEmpresaCaged\\:lblCnpjRaiz': [
           'formResumoEmpresaCaged\\:txtCnpjRaiz'
         ],
@@ -393,11 +284,9 @@ export class CagedProvider {
         let chaveJson: string = '';
         let elementoChave: any = document.querySelector('#' + chaveHtml);
         chaveJson = limparTextoChave(elementoChave.outerText);
-        console.log(chaveJson);
 
         listaValoresElement2[chaveHtml].forEach((itemValue: any) => {
           elementoValor = document.querySelector('#' + itemValue);
-          console.log(elementoValor);
           elementoStr = elementoValor.outerText;
 
           strValue += elementoStr + ' ';
@@ -433,7 +322,7 @@ export class CagedProvider {
     await navigationPromise;
 
     await page.waitForSelector('#formPesquisarTrabalhador\\:txtChavePesquisa');
-    await page.type('#formPesquisarTrabalhador\\:txtChavePesquisa', data.cnpj);
+    await page.type('#formPesquisarTrabalhador\\:txtChavePesquisa', this.data.cnpj);
 
     await navigationPromise;
 
@@ -481,9 +370,9 @@ export class CagedProvider {
     await page.waitForSelector('#txt27_Rais027');
 
     const elementosJson3 = await page.evaluate(listaValoresElement3 => {
-      let json: any = {};
+      const json: any = {};
 
-      var listaValoresElement3: any = {
+      listaValoresElement3 = {
         lb2_Nome027: ['txt2_Nome027'],
         lb1_pispasep027: ['txt1_Pis028'],
         lb1_elos028: ['txt1_elos028'],
@@ -538,13 +427,11 @@ export class CagedProvider {
         let elementoValor: any;
         let elementoStr: string;
         let chaveJson: string = '';
-        let elementoChave: any = document.querySelector('#' + chaveHtml);
+        const elementoChave: any = document.querySelector('#' + chaveHtml);
         chaveJson = limparTextoChave(elementoChave.outerText);
-        console.log(chaveJson);
 
         listaValoresElement3[chaveHtml].forEach((itemValue: any) => {
           elementoValor = document.querySelector('#' + itemValue);
-          console.log(elementoValor);
           elementoStr = elementoValor.outerText;
 
           strValue += elementoStr + ' ';
@@ -556,7 +443,6 @@ export class CagedProvider {
       return json;
     });
 
-    console.log(elementosJson3);
     await navigationPromise;
 
     return [elementosJson, elementosJson2, elementosJson3];

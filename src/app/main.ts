@@ -71,21 +71,12 @@ export class Main {
     return jsonMaster;
   }
 
-  public async buscaJuridica(): Promise<any> {
-    /*cadesp,caged,censec e jucesp */
-    const body = {
-      nome: '',
-      cpf: '43268712397',
-      nomeMae: '',
-      dataNascimento: '',
-      numero_processo: '11111111111111',
-      rg: ''
-    };
-    var jsonMaster: any = {};
-    const cadesp = new CadespProvider();
-    const caged = new CagedProvider();
+  public async buscaJuridica(body: any): Promise<any> {
+    let jsonMaster: any = {};
+    const cadesp = new CadespProvider(body);
+    const caged = new CagedProvider(body);
     const censec = new CensecProvider(body);
-    const jucesp = new JucespProvider();
+    const jucesp = new JucespProvider(body);
 
     const cadespDados = await cadesp
       .cadespPage()
@@ -121,25 +112,22 @@ export class Main {
       dataConsulta: await this.getDatetime()
     };
 
-    await this.client.connect((err: any) => {
-      console.log(err);
+    await this.client.connect(() => {
       const collection = this.client.db('mpsp').collection('consultas');
-      // perform actions on the collection object
       collection.insertOne(jsonMaster);
-      console.log('Salvei');
+      console.log('Consulta salva na collection');
       this.client.close();
     });
 
     return jsonMaster;
   }
 
-  public async buscaProcesso(): Promise<any> {
-    /* Arpenp */
-    var jsonMaster: any = {};
-    const arpenp = new ArpenpProvider();
+  public async buscaProcesso(body: any): Promise<any> {
+    let jsonMaster = {};
+    const arpenp = new ArpenpProvider(body);
     const arpenpDados = await arpenp
       .arpenpPage()
-      .then(jsonReturned => jsonReturned)
+      .then((jsonReturned) => jsonReturned)
       .finally(() => {
         arpenp.browser.close();
       });
@@ -151,11 +139,9 @@ export class Main {
     };
 
     await this.client.connect((err: any) => {
-      console.log(err);
       const collection = this.client.db('mpsp').collection('consultas');
-      // perform actions on the collection object
       collection.insertOne(jsonMaster);
-      console.log('Salvei');
+      console.log('Consulta salva na collection');
       this.client.close();
     });
 
@@ -163,12 +149,11 @@ export class Main {
   }
 
   public async buscaCriminal(): Promise<any> {
-    /* Infocrim */
-    var jsonMaster: any = {};
+    let jsonMaster = {};
     const infocrim = new InfocrimProvider();
     const infocrimDados = await infocrim
       .infocrimPage()
-      .then(jsonReturned => jsonReturned)
+      .then((jsonReturned) => jsonReturned)
       .finally(() => {
         infocrim.browser.close();
       });
@@ -180,11 +165,9 @@ export class Main {
     };
 
     await this.client.connect((err: any) => {
-      console.log(err);
       const collection = this.client.db('mpsp').collection('consultas');
-      // perform actions on the collection object
       collection.insertOne(jsonMaster);
-      console.log('Salvei');
+      console.log('Consulta salva na collection');
       this.client.close();
     });
 

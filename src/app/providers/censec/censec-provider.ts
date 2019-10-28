@@ -53,7 +53,7 @@ export class CensecProvider {
     await page.waitForSelector(
       '#ctl00_ContentPlaceHolder1_DocumentoTextBox'
     );
-    await page.type('#ctl00_ContentPlaceHolder1_DocumentoTextBox', this.body.cpf);
+    await page.type('#ctl00_ContentPlaceHolder1_DocumentoTextBox', this.body.cpf ? this.body.cpf : '11111111111');
     await page.click(
       '.AreaFormulario #ctl00_ContentPlaceHolder1_DocumentoTextBox'
     );

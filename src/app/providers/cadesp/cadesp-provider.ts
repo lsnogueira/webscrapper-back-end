@@ -3,25 +3,26 @@ import { mainLogin } from '..';
 import { json } from 'body-parser';
 
 const data = {
-  cnpjInformado: '11111111111111'
+  cnpj: '11111111111111'
 };
 
 export class CadespProvider {
-  private page: puppeteer.Page;
   public browser: puppeteer.Browser;
-  constructor() {}
+  private page: puppeteer.Page;
+
+  constructor(private body: any) {}
 
   public async cadespPage(): Promise<any> {
     this.browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--full-screen', '--disable-notifications']
     });
-  
+
     this.page = await this.browser.newPage();
 
     return mainLogin(this.page).then(
       (pageNova: puppeteer.Page) => {
-        return this.irPaginaCadesp(pageNova)
+        return this.irPaginaCadesp(pageNova);
       },
       (error) => console.error(error)
     );
@@ -96,7 +97,7 @@ export class CadespProvider {
     );
     await page.type(
       'body #ctl00_conteudoPaginaPlaceHolder_tcConsultaCompleta_TabPanel1_txtIdentificacao',
-      data.cnpjInformado
+      this.body.cnpj
     );
 
     await page.click(

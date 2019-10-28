@@ -54,54 +54,64 @@ app.post('/civil', (req, res) => {
   const pdfMaker = new PdfMaker();
   const PDFDocument = require('pdfkit');
   const documento = new PDFDocument();
-  const out = fs.createWriteStream('src/app/output/pdfs/output.pdf');
+  const out = fs.createWriteStream('src/app/output/pdfs/civil.pdf');
   documento.pipe(out);
   buscador
     .buscaCivil(req.body)
     .then((jsonMasterReturned) => {
       pdfMaker.construirPdfCivil(jsonMasterReturned, documento).then(() => {
         out.on('finish', () => {
-          res.download('src/app/output/pdfs/output.pdf');
+          res.download('src/app/output/pdfs/civil.pdf');
         });
       });
     })
-    .catch((err) => {
+    .catch(err => {
       console.log('erou aqui bicho', err);
-      res.status(420).send({message: 'scrapper brisou'});
+      res.status(420).send({ message: 'scrapper brisou' });
     });
 });
 
-app.get('/juridica', (req, res) => {
-  /*Arisp - PDF
-, cadesp,caged,censec e jucesp */
+app.post('/juridica', (req, res) => {
   const buscador = new Main();
   const pdfMaker = new PdfMaker();
   const PDFDocument = require('pdfkit');
   const documento = new PDFDocument();
-  const out = fs.createWriteStream('src/app/output/pdfs/output.pdf');
+  const out = fs.createWriteStream('src/app/output/pdfs/juridico.pdf');
   documento.pipe(out);
-  buscador.buscaJuridica().then(jsonMasterReturned => {
-    pdfMaker.construirPdfJuridica(jsonMasterReturned, documento).then(() => {
-      out.on('finish', () => {
-        res.download('src/app/output/pdfs/output.pdf');
+  buscador.buscaJuridica(req.body).then((jsonMasterReturned) => {
+    pdfMaker
+      .construirPdfJuridica(jsonMasterReturned, documento)
+      .then(() => {
+        out.on('finish', () => {
+          res.download('src/app/output/pdfs/juridico.pdf');
+        });
+      })
+      .catch(err => {
+        console.log('erou aqui bicho', err);
+        res.status(420).send({ message: 'scrapper brisou' });
       });
-    });
   });
 });
 
-app.get('/processo', (req, res) => {
-  /* Arpenp */
+app.post('/processo', (req, res) => {
   const buscador = new Main();
   const pdfMaker = new PdfMaker();
   const PDFDocument = require('pdfkit');
   const documento = new PDFDocument();
-  const out = fs.createWriteStream('src/app/output/pdfs/output.pdf');
-  buscador.buscaProcesso().then(jsonMasterReturned => {
-    pdfMaker.construirPdfProcesso(jsonMasterReturned, documento).then(() => {
-      out.on('finish', () => {
-        res.download('src/app/output/pdfs/output.pdf');
+  const out = fs.createWriteStream('src/app/output/pdfs/processo.pdf');
+  documento.pipe(out);
+  buscador.buscaProcesso(req.body).then((jsonMasterReturned) => {
+    pdfMaker
+      .construirPdfProcesso(jsonMasterReturned, documento)
+      .then(() => {
+        out.on('finish', () => {
+          res.download('src/app/output/pdfs/processo.pdf');
+        });
+      })
+      .catch(err => {
+        console.log('erou aqui bicho', err);
+        res.status(420).send({ message: 'scrapper brisou' });
       });
-    });
   });
 });
 
@@ -110,18 +120,21 @@ app.get('/automotiva', (req, res) => {
 });
 
 app.get('/criminal', (req, res) => {
-  /* Infocrim */
   const buscador = new Main();
   const pdfMaker = new PdfMaker();
   const PDFDocument = require('pdfkit');
   const documento = new PDFDocument();
-  const out = fs.createWriteStream('src/app/output/pdfs/output.pdf');
+  const out = fs.createWriteStream('src/app/output/pdfs/criminal.pdf');
   documento.pipe(out);
-  buscador.buscaCriminal().then(jsonMasterReturned => {
+  buscador.buscaCriminal().then((jsonMasterReturned) => {
     pdfMaker.construirPdfCriminal(jsonMasterReturned, documento).then(() => {
       out.on('finish', () => {
-        res.download('src/app/output/pdfs/output.pdf');
+        res.download('src/app/output/pdfs/criminal.pdf');
       });
+    })
+    .catch(err => {
+      console.log('erou aqui bicho', err);
+      res.status(420).send({ message: 'scrapper brisou' });
     });
   });
 });
