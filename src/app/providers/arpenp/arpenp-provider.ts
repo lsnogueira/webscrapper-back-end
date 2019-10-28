@@ -1,6 +1,5 @@
 import puppeteer = require('puppeteer');
 import { mainLogin } from '..';
-import { json } from 'body-parser';
 
 const data = {
   numero_processo: '11111111111111'

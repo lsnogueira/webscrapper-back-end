@@ -1,7 +1,7 @@
 import puppetteer = require('puppeteer');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-import {PdfMaker} from './pdfMaker'
+import { PdfMaker } from './pdfMaker';
 
 const MongoClient = require('mongodb').MongoClient;
 import {
@@ -15,174 +15,195 @@ import {
   JucespProvider,
   DetranProvider,
   CensecProvider
-
 } from './providers';
 
-
-
-
-
-// (async () => {
-//     var pdfMaker = new PdfMaker()
-//     var json ={
-//       "arpenp": {
-//         "cartorio_id": "110",
-//         "busca_juiz_id": "1997333",
-//         "tipo_registro": "C",
-//         "nome_registrado_1": "Antonio TORRES Coutinho",
-//         "nome_registrado_2": "Ellen MARCIA FERNANDES SILVEIRA",
-//         "novo_nome_registrado_1": "",
-//         "novo_nome_registrado_2": "Ellen MARCIA FERNANDES SILVEIRA Coutinho",
-//         "data_ocorrido": "19/03/2015",
-//         "data_registro": "19/03/2015",
-//         "num_livro": "00133",
-//         "num_folha": "237",
-//         "num_registro": "0039194",
-//         "matricula": "11914901552015200133237003919491",
-//         "nome_requerente": "Antonio Torres Coutinho",
-//         "documento_requerente": "",
-//         "telefone_requerente": "(11) 3119-7142"
-//       },
-//       "tipoConsulta": "Processo"
-//     }
-//     var documento = new PDFDocument
-//     documento.pipe(fs.createWriteStream("output.pdf"))
-//     pdfMaker.construirPdfProcesso(json, documento)
-    
-// })();
-
 export class Main {
-  private client: any
-  constructor(){
-    const uri = "mongodb+srv://usuariompsp:usuariompsp@cluster0-limay.mongodb.net/test?retryWrites=true&w=majority";
-    this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-  }
-  private async getDatetime(){
-    var currentdate = new Date(); 
-    var datetime = "" + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
-    return datetime;
-  }
-  public async buscaCivil(): Promise<any>{
-    
-    
-    var jsonMaster: any = {}
-    const censec = new CensecProvider()
-    const siel = new SielProvider()
-    const sivec = new SivecProvider()
+  private client: any;
 
-    const censecDados = await censec.censecPage().then((jsonReturned) => jsonReturned).finally(()=>{censec.browser.close()})
-    const sielDados = await siel.sielPage().then((jsonReturned) => jsonReturned).finally(()=>{siel.browser.close()})
-    const sivecDados = await sivec.sivecPage().then((jsonReturned) => jsonReturned).finally(()=>{sivec.browser.close()})
+  constructor() {
+    const uri =
+      'mongodb+srv://usuariompsp:usuariompsp@cluster0-limay.mongodb.net/test?retryWrites=true&w=majority';
+    this.client = new MongoClient(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+  }
 
+  public async buscaCivil(body: any): Promise<any> {
+    let jsonMaster = {};
+
+    const censec = new CensecProvider(body);
+    const siel = new SielProvider(body);
+    const sivec = new SivecProvider(body);
+
+    const censecDados = await censec
+      .censecPage()
+      .then((jsonReturned) => jsonReturned)
+      .finally(() => {
+        censec.browser.close();
+      });
+    const sielDados = await siel
+      .sielPage()
+      .then((jsonReturned) => jsonReturned)
+      .finally(() => {
+        siel.browser.close();
+      });
+    const sivecDados = await sivec
+      .sivecPage()
+      .then((jsonReturned) => jsonReturned)
+      .finally(() => {
+        sivec.browser.close();
+      });
     jsonMaster = {
-      "censec": censecDados,
-      "siel": sielDados,
-      "sivec": sivecDados,
-       tipoConsulta: "Civil",
-       dataConsulta: await this.getDatetime()
+      censec: censecDados,
+      siel: sielDados,
+      sivec: sivecDados,
+      tipoConsulta: 'Civil',
+      dataConsulta: await this.getDatetime()
     };
-    await this.client.connect((err:any) => {
-      console.log(err)
-      const collection = this.client.db("mpsp").collection("consultas");
-      // perform actions on the collection object
+    await this.client.connect(() => {
+      const collection = this.client.db('mpsp').collection('consultas');
       collection.insertOne(jsonMaster);
-      console.log("Salvei")
+      console.log('Consulta salva na collection');
       this.client.close();
     });
-  
 
     return jsonMaster;
   }
 
-  public async buscaJuridica(): Promise<any>{
+  public async buscaJuridica(): Promise<any> {
     /*cadesp,caged,censec e jucesp */
-    var jsonMaster: any = {}
-    const cadesp = new CadespProvider()
-    const caged = new CagedProvider()
-    const censec = new CensecProvider()
-    const jucesp = new JucespProvider()
+    const body = {
+      nome: '',
+      cpf: '43268712397',
+      nomeMae: '',
+      dataNascimento: '',
+      numero_processo: '11111111111111',
+      rg: ''
+    };
+    var jsonMaster: any = {};
+    const cadesp = new CadespProvider();
+    const caged = new CagedProvider();
+    const censec = new CensecProvider(body);
+    const jucesp = new JucespProvider();
 
-    const cadespDados = await cadesp.cadespPage().then((jsonReturned) => jsonReturned).finally(()=>{cadesp.browser.close()})
-    const cagedDados = await caged.cagedPage().then((jsonReturned) => jsonReturned).finally(()=>{caged.browser.close()})
-    const censecDados = await censec.censecPage().then((jsonReturned) => jsonReturned).finally(()=>{censec.browser.close()})
-    const jucespDados = await jucesp.jucespPage().then((jsonReturned) => jsonReturned).finally(()=>{jucesp.browser.close()})
+    const cadespDados = await cadesp
+      .cadespPage()
+      .then(jsonReturned => jsonReturned)
+      .finally(() => {
+        cadesp.browser.close();
+      });
+    const cagedDados = await caged
+      .cagedPage()
+      .then(jsonReturned => jsonReturned)
+      .finally(() => {
+        caged.browser.close();
+      });
+    const censecDados = await censec
+      .censecPage()
+      .then(jsonReturned => jsonReturned)
+      .finally(() => {
+        censec.browser.close();
+      });
+    const jucespDados = await jucesp
+      .jucespPage()
+      .then(jsonReturned => jsonReturned)
+      .finally(() => {
+        jucesp.browser.close();
+      });
 
     jsonMaster = {
-      "cadesp": cadespDados,
-      "caged": cagedDados,
-      "censec": censecDados,
-      "jucesp": jucespDados,
-      tipoConsulta: "Juridica",
+      cadesp: cadespDados,
+      caged: cagedDados,
+      censec: censecDados,
+      jucesp: jucespDados,
+      tipoConsulta: 'Juridica',
       dataConsulta: await this.getDatetime()
     };
 
-    await this.client.connect((err:any) => {
-      console.log(err)
-      const collection = this.client.db("mpsp").collection("consultas");
+    await this.client.connect((err: any) => {
+      console.log(err);
+      const collection = this.client.db('mpsp').collection('consultas');
       // perform actions on the collection object
       collection.insertOne(jsonMaster);
-      console.log("Salvei")
+      console.log('Salvei');
       this.client.close();
     });
 
     return jsonMaster;
   }
 
-  public async buscaProcesso(): Promise<any>{
+  public async buscaProcesso(): Promise<any> {
     /* Arpenp */
-    var jsonMaster: any = {}
-    const arpenp = new ArpenpProvider()
-    const arpenpDados = await arpenp.arpenpPage().then((jsonReturned) => jsonReturned).finally(()=>{arpenp.browser.close()})
-    
+    var jsonMaster: any = {};
+    const arpenp = new ArpenpProvider();
+    const arpenpDados = await arpenp
+      .arpenpPage()
+      .then(jsonReturned => jsonReturned)
+      .finally(() => {
+        arpenp.browser.close();
+      });
+
     jsonMaster = {
-      "arpenp": arpenpDados,
-      tipoConsulta: "Processo",
+      arpenp: arpenpDados,
+      tipoConsulta: 'Processo',
       dataConsulta: await this.getDatetime()
     };
 
-    await this.client.connect((err:any) => {
-      console.log(err)
-      const collection = this.client.db("mpsp").collection("consultas");
+    await this.client.connect((err: any) => {
+      console.log(err);
+      const collection = this.client.db('mpsp').collection('consultas');
       // perform actions on the collection object
       collection.insertOne(jsonMaster);
-      console.log("Salvei")
+      console.log('Salvei');
       this.client.close();
     });
 
     return jsonMaster;
-
   }
 
-
-  public async buscaCriminal(): Promise<any>{
+  public async buscaCriminal(): Promise<any> {
     /* Infocrim */
-    var jsonMaster: any = {}
-    const infocrim = new InfocrimProvider()
-    const infocrimDados = await infocrim.infocrimPage().then((jsonReturned) => jsonReturned).finally(()=>{infocrim.browser.close()})
-    
+    var jsonMaster: any = {};
+    const infocrim = new InfocrimProvider();
+    const infocrimDados = await infocrim
+      .infocrimPage()
+      .then(jsonReturned => jsonReturned)
+      .finally(() => {
+        infocrim.browser.close();
+      });
+
     jsonMaster = {
-      "infocrim": infocrimDados,
-      tipoConsulta:"Criminal",
+      infocrim: infocrimDados,
+      tipoConsulta: 'Criminal',
       dataConsulta: await this.getDatetime()
     };
 
-    await this.client.connect((err:any) => {
-      console.log(err)
-      const collection = this.client.db("mpsp").collection("consultas");
+    await this.client.connect((err: any) => {
+      console.log(err);
+      const collection = this.client.db('mpsp').collection('consultas');
       // perform actions on the collection object
       collection.insertOne(jsonMaster);
-      console.log("Salvei")
+      console.log('Salvei');
       this.client.close();
     });
 
     return jsonMaster;
   }
 
-
-
+  private async getDatetime() {
+    const currentdate = new Date();
+    return '' +
+      currentdate.getDate() +
+      '/' +
+      (currentdate.getMonth() + 1) +
+      '/' +
+      currentdate.getFullYear() +
+      ' ' +
+      currentdate.getHours() +
+      ':' +
+      currentdate.getMinutes() +
+      ':' +
+      currentdate.getSeconds();
+  }
 }

@@ -1,26 +1,21 @@
 import puppeteer = require('puppeteer');
 import { mainLogin } from '../globals';
-import { json } from 'body-parser';
 
-const data = {
-  rg: '11111111111111',
-  nome: 'teste',
-  matriculaSap: '213213213'
-};
+const matriculaSap = '213213213';
 
 export class SivecProvider {
+  public browser: puppeteer.Browser;
   private result: any;
   private page: puppeteer.Page;
-  public browser: puppeteer.Browser;
 
-  constructor() {}
+  constructor(private data: any) {}
 
   public async sivecPage(): Promise<any> {
     this.browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--full-screen', '--disable-notifications']
     });
-  
+
     this.page = await this.browser.newPage();
 
     return mainLogin(this.page).then(
@@ -62,7 +57,8 @@ export class SivecProvider {
 
     await page.waitFor(300);
 
-    if (data.rg !== '') {
+    // PARA RETIRAR ESSE GATO PRECISA ARRUMAR O WEBSCRAPPING
+    if (this.data.rg !== '' && false) {
       await page.waitForSelector(
         '.dropdown-menu > .open > .dropdown-menu > li:nth-child(1) > a'
       );
@@ -70,10 +66,9 @@ export class SivecProvider {
         '.dropdown-menu > .open > .dropdown-menu > li:nth-child(1) > a'
       );
       await page.waitForSelector('input[id="idValorPesq"]');
-      await page.type('input[id="idValorPesq"]', data.rg);
-      await page.waitForSelector('input[id="procurar"]');
-      await page.click('input[id="procurar"]');
-    } else if (data.matriculaSap !== '') {
+      await page.type('input[id="idValorPesq"]', this.data.rg);
+      await page.waitForSelector('input[id="procura"]');
+      await page.click('input[id="procura"]');
       await page.waitForSelector(
         '.dropdown-menu > .open > .dropdown-menu > li:nth-child(3) > a'
       );
@@ -81,10 +76,10 @@ export class SivecProvider {
         '.dropdown-menu > .open > .dropdown-menu > li:nth-child(3) > a'
       );
       await page.waitForSelector('input[id="idValorPesq"]');
-      await page.type('input[id="idValorPesq"]', data.matriculaSap);
+      await page.type('input[id="idValorPesq"]', matriculaSap);
       await page.waitForSelector('input[id="procurar"]');
       await page.click('input[id="procurar"]');
-    } else if (data.nome !== '') {
+    } else if (this.data.nome !== '') {
       await page.waitForSelector(
         '.dropdown-menu > .open > .dropdown-menu > li:nth-child(2) > a'
       );
@@ -92,9 +87,9 @@ export class SivecProvider {
         '.dropdown-menu > .open > .dropdown-menu > li:nth-child(2) > a'
       );
       await page.waitForSelector('input[id="idNomePesq"]');
-      await page.type('input[id="idNomePesq"]', data.nome);
-      await page.waitForSelector('input[id="procurar"]');
-      await page.click('input[id="procurar"]');
+      await page.type('input[id="idNomePesq"]', this.data.nome);
+      await page.waitForSelector('input[id="procura"]');
+      await page.click('input[id="procura"]');
     }
 
     await navigationPromise;

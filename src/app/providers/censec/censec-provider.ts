@@ -4,24 +4,23 @@ import { CensecPartesModel } from '../../core/domain/entity/censec-partes-model'
 import { CensecCartorioDadosModel } from '../../core/domain/entity/censec-cartorio-dados-model';
 
 export class CensecProvider {
+  public browser: puppeteer.Browser;
   private result: any;
   private page: puppeteer.Page;
-  public browser: puppeteer.Browser;
-  constructor() {
-  }
+
+  constructor(private body: any) {}
 
   public async censecPage(): Promise<any> {
-
     this.browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--full-screen', '--disable-notifications']
     });
-  
+
     this.page = await this.browser.newPage();
 
     return mainLogin(this.page).then(
       (pageNova: puppeteer.Page) => {
-        return this.irPaginaCensec(pageNova)
+        return this.irPaginaCensec(pageNova);
       },
       (error) => console.error(error)
     );
@@ -39,7 +38,6 @@ export class CensecProvider {
     await page.click('#CaixaLogin > #FlagLogin #EntrarButton');
 
     await navigationPromise;
-
     await page.waitForSelector('#ctl00_CESDIConsultaAtoHyperLink');
     await page.evaluate(() => {
       (document.getElementById(
@@ -52,6 +50,10 @@ export class CensecProvider {
     await page.waitForSelector(
       '.AreaFormulario #ctl00_ContentPlaceHolder1_DocumentoTextBox'
     );
+    await page.waitForSelector(
+      '#ctl00_ContentPlaceHolder1_DocumentoTextBox'
+    );
+    await page.type('#ctl00_ContentPlaceHolder1_DocumentoTextBox', this.body.cpf);
     await page.click(
       '.AreaFormulario #ctl00_ContentPlaceHolder1_DocumentoTextBox'
     );
@@ -80,7 +82,6 @@ export class CensecProvider {
     await page.waitForSelector(
       '.Conteudo > .InternaAbas > .AreaFormulario > .CampoSimples:nth-child(1) > span'
     );
-    const json = {};
 
     await page.waitForSelector(
       '.InternaAbas #ctl00_ContentPlaceHolder1_CodigoTextBox'
@@ -212,9 +213,9 @@ export class CensecProvider {
     });
 
     this.result = {
-        partes: partesContent,
-        dadosCartorio: dadosCartorioContent,
+      partes: partesContent,
+      dadosCartorio: dadosCartorioContent
     };
-    return this.result
+    return this.result;
   }
 }

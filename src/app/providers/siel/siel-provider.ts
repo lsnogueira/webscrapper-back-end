@@ -1,26 +1,20 @@
 import puppeteer = require('puppeteer');
 import { mainLogin } from '../globals';
-import { json } from 'body-parser';
-
-const data = {
-  numero_processo: '11111111111111',
-  nome: 'KLAUS'
-};
 
 export class SielProvider {
+  public browser: puppeteer.Browser;
   private result: any;
   private page: puppeteer.Page;
-  public browser: puppeteer.Browser;
 
-  constructor() {}
+  constructor(private data: any) {}
 
   public async sielPage(): Promise<any> {
-    
+
     this.browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--full-screen', '--disable-notifications']
     });
-  
+
     this.page = await this.browser.newPage();
 
     return mainLogin(this.page).then(
@@ -51,8 +45,8 @@ export class SielProvider {
 
     await page.waitForSelector('input[name="num_processo"]');
     await page.waitForSelector('input[name="nome"]');
-    await page.type("input[name='num_processo']", data.numero_processo);
-    await page.type("input[name='nome']", data.nome);
+    await page.type("input[name='num_processo']", this.data.numero_processo);
+    await page.type("input[name='nome']", this.data.nome);
 
     await page.waitForSelector('table > tbody > tr > td > .img');
     await page.click('table > tbody > tr > td > .img');
