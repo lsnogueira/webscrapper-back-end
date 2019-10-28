@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 
-app.get('/relatorio', async (req, res) => {
+app.get('/relatorios', async (req, res) => {
   const uri =
     'mongodb+srv://usuariompsp:usuariompsp@cluster0-limay.mongodb.net/test?retryWrites=true&w=majority';
   const client = new mongo.MongoClient(uri, {
@@ -31,18 +31,22 @@ app.get('/relatorio', async (req, res) => {
   client.connect((err: any) => {
     console.log(err);
     const collection = client.db('mpsp').collection('consultas');
+
+    const pageOptions = {
+      page: req.query.page || 0,
+      limit: req.query.limit || 100
+    };
+
     collection
-      .find(
-        {},
-        {
-          projection: {
-            _id: 1,
-            tipoConsulta: 1
-          }
+      .find()
+      .skip(pageOptions.page * pageOptions.limit)
+      .limit(pageOptions.limit)
+      .toArray((err, doc) => {
+        if (err) {
+          res.status(500).json(err);
+          return;
         }
-      )
-      .toArray((err: any, result: any) => {
-        res.send(result);
+        res.status(200).json(doc);
       });
     console.log('Consultei');
     client.close();
@@ -58,7 +62,7 @@ app.post('/civil', (req, res) => {
   documento.pipe(out);
   buscador
     .buscaCivil(req.body)
-    .then((jsonMasterReturned) => {
+    .then(jsonMasterReturned => {
       pdfMaker.construirPdfCivil(jsonMasterReturned, documento).then(() => {
         out.on('finish', () => {
           res.download('src/app/output/pdfs/civil.pdf');
@@ -78,7 +82,7 @@ app.post('/juridica', (req, res) => {
   const documento = new PDFDocument();
   const out = fs.createWriteStream('src/app/output/pdfs/juridico.pdf');
   documento.pipe(out);
-  buscador.buscaJuridica(req.body).then((jsonMasterReturned) => {
+  buscador.buscaJuridica(req.body).then(jsonMasterReturned => {
     pdfMaker
       .construirPdfJuridica(jsonMasterReturned, documento)
       .then(() => {
@@ -100,7 +104,7 @@ app.post('/processo', (req, res) => {
   const documento = new PDFDocument();
   const out = fs.createWriteStream('src/app/output/pdfs/processo.pdf');
   documento.pipe(out);
-  buscador.buscaProcesso(req.body).then((jsonMasterReturned) => {
+  buscador.buscaProcesso(req.body).then(jsonMasterReturned => {
     pdfMaker
       .construirPdfProcesso(jsonMasterReturned, documento)
       .then(() => {
@@ -126,16 +130,18 @@ app.get('/criminal', (req, res) => {
   const documento = new PDFDocument();
   const out = fs.createWriteStream('src/app/output/pdfs/criminal.pdf');
   documento.pipe(out);
-  buscador.buscaCriminal().then((jsonMasterReturned) => {
-    pdfMaker.construirPdfCriminal(jsonMasterReturned, documento).then(() => {
-      out.on('finish', () => {
-        res.download('src/app/output/pdfs/criminal.pdf');
+  buscador.buscaCriminal().then(jsonMasterReturned => {
+    pdfMaker
+      .construirPdfCriminal(jsonMasterReturned, documento)
+      .then(() => {
+        out.on('finish', () => {
+          res.download('src/app/output/pdfs/criminal.pdf');
+        });
+      })
+      .catch(err => {
+        console.log('erou aqui bicho', err);
+        res.status(420).send({ message: 'scrapper brisou' });
       });
-    })
-    .catch(err => {
-      console.log('erou aqui bicho', err);
-      res.status(420).send({ message: 'scrapper brisou' });
-    });
   });
 });
 
