@@ -145,6 +145,90 @@ app.get('/criminal', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Saí de casa comi pra caralho porra!! Ouve na 3000!');
+async function carregaMongoDb(req: any, res: any, next: any) {
+  console.log('Isso veio no get');
+
+  console.log(req.params);
+
+  const uri =
+    'mongodb+srv://usuariompsp:usuariompsp@cluster0-limay.mongodb.net/test?retryWrites=true&w=majority';
+
+  const client = new mongo.MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
+
+  await client.connect((err: any) => {
+    console.log(err);
+
+    const collection = client.db('mpsp').collection('consultas');
+
+    // perform actions on the collection object
+
+    let idObjeto = new mongo.ObjectID(req.params.id);
+
+    collection
+      .findOne({ _id: idObjeto })
+      .then((docs: any) => {
+        req.dataProcessed = docs;
+
+        next();
+      })
+      .finally(() => {
+        client.close();
+      });
+  });
+}
+
+async function geraPdf(req: any, res: any) {
+  // Prepare the context
+
+  const context = req.dataProcessed;
+
+  console.log('Contexto', context);
+
+  const pdfMaker = new PdfMaker();
+
+  const PDFDocument = require('pdfkit');
+
+  const documento = new PDFDocument();
+
+  let out = fs.createWriteStream('src/app/output/pdfs/output.pdf');
+
+  documento.pipe(out);
+
+  await pdfMaker.construirPdf(context, documento).then(() => {
+    out.on('finish', function() {
+      res.download('src/app/output/pdfs/output.pdf');
+    });
+  });
+}
+
+app.get('/relatorio/:id', carregaMongoDb, geraPdf);
+
+app.get('/relatorio', async function (req, res) {
+   
+
+  var uri = "mongodb+srv://usuariompsp:usuariompsp@cluster0-limay.mongodb.net/test?retryWrites=true&w=majority";
+  const client = new mongo.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  await client.connect((err:any) => {
+      console.log(err)
+      const collection = client.db("mpsp").collection("consultas");
+      // perform actions on the collection object
+      collection.find({},  {projection:{
+          "_id": 1,
+      "dataConsulta": 1,
+      "tipoConsulta": 1}}).toArray(function(err:any, result:any){
+          res.send(result);
+      })
+      console.log("Consultei")
+      client.close();
+
+})
+})
+
+app.listen(3000, '0.0.0.0',function () {
+
+  console.log('Example app listening on port 3000!');
+
 });

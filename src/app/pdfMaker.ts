@@ -112,6 +112,7 @@ export class PdfMaker {
   */
 
  public pdfInfocrom(jsonInfocrim: any, docAux: any, background: string){
+   console.log("Construindo na funcao pdfInfocrim")
   var jsonInfocrim1: any = {}
   var jsonInfocrim2: any = {}
   let contador = 0
@@ -198,6 +199,8 @@ export class PdfMaker {
     .lineTo(x + 430, yComecoAux)   //indo pra cima direita
     .lineTo(xComecoAux,yComecoAux) //Voltando ao começo
     .stroke();   
+
+    
 
 
 }
@@ -615,6 +618,20 @@ export class PdfMaker {
     
   }
 
+  public async construirPdf(json: any, doc: any) :Promise<void>{
+    if(json["tipoConsulta"].toLowerCase() == "civil"){
+      this.construirPdfCivil(json, doc)
+    }
+    else if(json["tipoConsulta"].toLowerCase() == "juridica"){
+      this.construirPdfJuridica(json, doc)
+    }
+    else if(json["tipoConsulta"].toLowerCase() == "processo"){
+      this.construirPdfProcesso(json, doc)
+    }
+    else if(json["tipoConsulta"].toLowerCase() == "criminal"){
+      this.construirPdfCriminal(json, doc)
+    }
+  }
 
   
   public async construirPdfCivil(jsonCivil: any, doc: any) : Promise<void>{    
@@ -658,7 +675,8 @@ export class PdfMaker {
    
   }
 
-  public async construirPdfCriminal(jsonCriminal: any, doc: any) : Promise<void>{    
+  public async construirPdfCriminal(jsonCriminal: any, doc: any) : Promise<void>{   
+    console.log("Construindo pdf criminal - Na função") 
     /*cadesp,caged,censec e jucesp */
 
     //doc.image('./img/background2.jpg', 0, 0, {width: 612})
@@ -668,6 +686,9 @@ export class PdfMaker {
     
     /* InfoCrim */
     await this.pdfInfocrom(jsonCriminal["infocrim"], doc, 'backgroundCriminal')
+    console.log("Terminei!")
+    console.log("Esse eh o doc: ", doc)
+    console.log("esse eh o json", jsonCriminal)
     await doc.end()
    
   }
