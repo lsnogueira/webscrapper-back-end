@@ -138,7 +138,6 @@ export class CagedProvider {
       return json;
     });
 
-    /* Entrando em empresa */
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/caged/login.html',
       { waitUntil: 'networkidle2' }
@@ -298,7 +297,6 @@ export class CagedProvider {
       return json;
     });
 
-    /* Entrando em Trabalhador */
     await page.goto(
       'http://ec2-18-231-116-58.sa-east-1.compute.amazonaws.com/caged/login.html',
       { waitUntil: 'networkidle2' }

@@ -113,27 +113,24 @@ export class CadespProvider {
       '#ctl00_conteudoPaginaPlaceHolder_dlEstabelecimentoGeral td.labelDetalhe'
     );
 
-    //Construção de algoritmo de captura de informações na tela do cadesp
     const elementosJson = await page.evaluate(() => {
-      /* Tabela Cabecalho */
 
-      //Leitura das TRs
       const linhasTr = Array.prototype.map.call(
         document.querySelectorAll(
           'body #ctl00_conteudoPaginaPlaceHolder_dlCabecalho td.labelDetalhe'
         ),
         item => item.parentNode
       );
-      //Captura das cells contidas nas Trs
+
       const htmlCollections = Array.prototype.map.call(
         linhasTr,
         item => item.cells
       );
-      //Captura do conteúdo das cells
+
       const elementos = Array.prototype.map.call(htmlCollections, item =>
         Array.prototype.map.call(item, elemento => elemento.outerText)
       );
-      //Arrumando o conteudo
+
       const listaArrumada = Array.prototype.map.call(elementos, (item, index) => {
         const splitando = item[2].split(':');
         let listaElementos = item.slice(0);
@@ -142,27 +139,23 @@ export class CadespProvider {
         return listaElementos;
       });
 
-      //Geração de uma unica lista com todos os conteudos
       let listaConcatCabecalho: any = [];
       for (const i in listaArrumada) {
         listaConcatCabecalho = listaConcatCabecalho.concat(listaArrumada[i]);
       }
 
-      /* Tabela Estabelecimento */
-
-      //Captura das Trs
       const linhasTrEstabelecimento = Array.prototype.map.call(
         document.querySelectorAll(
           '#ctl00_conteudoPaginaPlaceHolder_dlEstabelecimentoGeral td.labelDetalhe'
         ),
         item => item.parentNode
       );
-      //Captura das celulas de cada TR
+
       const htmlCollectionsEstabelecimento = Array.prototype.map.call(
         linhasTrEstabelecimento,
         item => item.cells
       );
-      //Capturando os textos e filtrando para nao pegar dados nulos
+
       const elementosFEstabelecimento = Array.prototype.map.call(
         htmlCollectionsEstabelecimento,
         item =>
@@ -173,17 +166,17 @@ export class CadespProvider {
             return true;
           })
       );
-      //Filtrando arrays nao vazios
+
       const elementosF2Estabelecimento = Array.prototype.filter.call(
         elementosFEstabelecimento,
         item => item.length != 0
       );
-      //Capturando o texto de cada elemento
+
       const elementosOuterTextEstabelecimento = Array.prototype.map.call(
         elementosF2Estabelecimento,
         item => Array.prototype.map.call(item, elemento => elemento.outerText)
       );
-      //Campos que nao tiverem valor substituir por Nao informado
+
       const elementosArrumadosEstabelecimento = Array.prototype.map.call(
         elementosOuterTextEstabelecimento,
         (item, index) => {
@@ -196,7 +189,6 @@ export class CadespProvider {
         }
       );
 
-      //Agrupando todo conteudo em uma lista só
       let listaConcatEstabelecimento: any = [];
       for (const i in elementosArrumadosEstabelecimento) {
         listaConcatEstabelecimento = listaConcatEstabelecimento.concat(
@@ -204,12 +196,10 @@ export class CadespProvider {
         );
       }
 
-      /* Juntando informacoes - Cabecalho e Estabelecimento */
       let listaCompleta: any = listaConcatCabecalho.concat(
         listaConcatEstabelecimento
       );
 
-      //Corrigindo valores:
       listaCompleta = listaCompleta.map(function(item: string, index: any) {
         if (index % 2 == 0) {
           return item
@@ -228,7 +218,6 @@ export class CadespProvider {
         return item.trim();
       });
 
-      //Processo para remoção de duplicatas
       let iterador = 0;
       const listaAjustada: Array<String> = [];
       while (iterador < listaCompleta.length) {
@@ -237,14 +226,12 @@ export class CadespProvider {
         );
       }
 
-      //Removendo duplicatadas
       let removerDuplicatas: any = Array.from(new Set(listaAjustada));
 
       removerDuplicatas = removerDuplicatas.map((item: string) => {
         return item.split('ajustesplit');
       });
 
-      //Transformacao em objeto - posteriormente JSON
       const json: any = {};
       removerDuplicatas.forEach((item: Array<string>) => {
         json[item[0].trim()] = item[1].trim();

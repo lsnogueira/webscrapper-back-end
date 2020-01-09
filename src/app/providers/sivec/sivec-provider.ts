@@ -130,7 +130,6 @@ export class SivecProvider {
         elementosTr,
         item => item.children
       );
-      console.log('ESTOU AQUI');
 
       const elementosFiltrados = Array.prototype.map.call(elementosTd, item => {
         return Array.prototype.filter.call(item, iTd => {
@@ -141,8 +140,6 @@ export class SivecProvider {
         });
       });
 
-      console.log(elementosFiltrados);
-
       const elementosStr = Array.prototype.map.call(
         elementosFiltrados,
         item => {
@@ -152,16 +149,12 @@ export class SivecProvider {
         }
       );
 
-      console.log(elementosStr);
-
       const json: any = {};
 
       elementosStr.forEach((item: any) => {
         json[limparTextoChave(item[0])] = item[1];
         json[limparTextoChave(item[2])] = item[3];
       });
-      console.log('CONSTRUINDO O JSON');
-      console.log(json);
 
       const elementosTx = document.querySelectorAll(
         '.container > .row > div > .textotab2'

@@ -60,7 +60,6 @@ export class SielProvider {
       );
       elemento = elemento.children;
 
-      console.log(elemento);
       const dadosFiltrados: any = Array.prototype.filter.call(
         elemento,
         (item: any) => {
@@ -70,8 +69,6 @@ export class SielProvider {
           return false;
         }
       );
-
-      console.log(dadosFiltrados);
 
       const dadosTd: any = Array.prototype.map.call(
         dadosFiltrados,
@@ -89,19 +86,14 @@ export class SielProvider {
           ];
         }
       );
-      console.log(dadosTd);
       const jsonRetorno: any = {};
-      console.log('ITENS');
       dadosTd.forEach((item: string[]) => {
-        console.log('ITEM');
-        console.log(item);
         jsonRetorno[item[0]] = item[1];
-        console.log(jsonRetorno);
       });
 
       return jsonRetorno;
     });
 
-    return elementosJson
+    return elementosJson;
   }
 }

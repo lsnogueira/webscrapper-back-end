@@ -146,10 +146,6 @@ app.get('/criminal', (req, res) => {
 });
 
 async function carregaMongoDb(req: any, res: any, next: any) {
-  console.log('Isso veio no get');
-
-  console.log(req.params);
-
   const uri =
     'mongodb+srv://usuariompsp:usuariompsp@cluster0-limay.mongodb.net/test?retryWrites=true&w=majority';
 
@@ -163,9 +159,7 @@ async function carregaMongoDb(req: any, res: any, next: any) {
 
     const collection = client.db('mpsp').collection('consultas');
 
-    // perform actions on the collection object
-
-    let idObjeto = new mongo.ObjectID(req.params.id);
+    const idObjeto = new mongo.ObjectID(req.params.id);
 
     collection
       .findOne({ _id: idObjeto })
